@@ -1,0 +1,140 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Team member and manager profiles with custom avatar uploads and credentials",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique user ID" },
+        "name": { "type": "string", "description": "Full name of the user", "maxLength": 100 },
+        "username": { "type": "string", "description": "Custom username handle", "maxLength": 50 },
+        "email": { "type": "string", "description": "User email address", "maxLength": 150 },
+        "role": { "type": "string", "enum": ["MANAGER", "MEMBER"], "description": "Role in workspace" },
+        "title": { "type": "string", "description": "Job title/specialization", "maxLength": 100 },
+        "avatarColor": { "type": "string", "description": "HEX color for user avatar", "maxLength": 20 },
+        "avatarUrl": { "type": "string", "description": "Uploaded avatar image (Base64 data URL)" },
+        "status": { "type": "string", "enum": ["ONLINE", "AWAY", "OFFLINE"], "description": "Active status" },
+        "teamIds": { "type": "array", "description": "List of team IDs user belongs to" },
+        "createdAt": { "type": "string", "description": "ISO timestamp of creation" }
+      },
+      "required": ["id", "name", "email", "role"]
+    },
+    "Team": {
+      "title": "Team",
+      "description": "Team organizations managed by one or more managers",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique team ID" },
+        "name": { "type": "string", "description": "Team name", "maxLength": 100 },
+        "description": { "type": "string", "description": "Team description", "maxLength": 500 },
+        "logoUrl": { "type": "string", "description": "Team custom logo Base64 image" },
+        "createdBy": { "type": "string", "description": "Creator User ID" },
+        "managerIds": { "type": "array", "description": "Array of manager user IDs" },
+        "memberIds": { "type": "array", "description": "Array of member user IDs" },
+        "color": { "type": "string", "description": "Team accent color", "maxLength": 20 },
+        "createdAt": { "type": "string", "description": "ISO timestamp of creation" }
+      },
+      "required": ["id", "name", "managerIds", "memberIds"]
+    },
+    "TeamInvitation": {
+      "title": "TeamInvitation",
+      "description": "Invitations sent to users to join teams",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique invitation ID" },
+        "teamId": { "type": "string", "description": "Target team ID" },
+        "teamName": { "type": "string", "description": "Target team name" },
+        "teamLogoUrl": { "type": "string", "description": "Target team logo" },
+        "invitedUserId": { "type": "string", "description": "Invited user ID" },
+        "invitedUserName": { "type": "string", "description": "Invited user name" },
+        "invitedByUserId": { "type": "string", "description": "Sender manager user ID" },
+        "invitedByName": { "type": "string", "description": "Sender manager name" },
+        "status": { "type": "string", "enum": ["PENDING", "ACCEPTED", "REJECTED"], "description": "Invitation status" },
+        "createdAt": { "type": "string", "description": "ISO timestamp of creation" }
+      },
+      "required": ["id", "teamId", "invitedUserId", "status"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "Assigned team tasks with status, completion notes, and screenshots",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique task ID" },
+        "teamId": { "type": "string", "description": "Linked team ID" },
+        "title": { "type": "string", "description": "Title of the task", "maxLength": 200 },
+        "description": { "type": "string", "description": "Detailed task instructions", "maxLength": 3000 },
+        "assignedTo": { "type": "string", "description": "Assignee user ID" },
+        "assignedToName": { "type": "string", "description": "Assignee full name", "maxLength": 100 },
+        "assignedBy": { "type": "string", "description": "Manager user ID who assigned task" },
+        "assignedByName": { "type": "string", "description": "Manager full name", "maxLength": 100 },
+        "priority": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH", "URGENT"], "description": "Priority level" },
+        "status": { "type": "string", "enum": ["TODO", "IN_PROGRESS", "IN_REVIEW", "COMPLETED"], "description": "Workflow status" },
+        "dueDate": { "type": "string", "description": "Due date in YYYY-MM-DD format" },
+        "createdAt": { "type": "string", "description": "ISO timestamp of creation" },
+        "updatedAt": { "type": "string", "description": "ISO timestamp of last update" },
+        "completedAt": { "type": "string", "description": "ISO timestamp of completion" },
+        "completionNotes": { "type": "string", "description": "Detailed notes added upon completion", "maxLength": 3000 },
+        "screenshots": { "type": "array", "description": "List of screenshot proofs attached to task" },
+        "comments": { "type": "array", "description": "Discussion comments on task" }
+      },
+      "required": ["id", "title", "assignedTo", "assignedBy", "priority", "status"]
+    },
+    "Channel": {
+      "title": "Channel",
+      "description": "Team chat channels",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Channel ID" },
+        "teamId": { "type": "string", "description": "Associated team ID" },
+        "name": { "type": "string", "description": "Channel name slug", "maxLength": 50 },
+        "description": { "type": "string", "description": "Channel purpose", "maxLength": 200 },
+        "createdAt": { "type": "string", "description": "ISO timestamp of creation" }
+      },
+      "required": ["id", "name"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Chat messages in channels",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique message ID" },
+        "channelId": { "type": "string", "description": "Channel ID" },
+        "senderId": { "type": "string", "description": "Sender User ID" },
+        "senderName": { "type": "string", "description": "Sender Name", "maxLength": 100 },
+        "senderRole": { "type": "string", "enum": ["MANAGER", "MEMBER"], "description": "Sender Role" },
+        "senderColor": { "type": "string", "description": "Sender avatar color" },
+        "senderAvatarUrl": { "type": "string", "description": "Sender avatar image" },
+        "text": { "type": "string", "description": "Message text content", "maxLength": 2000 },
+        "attachment": { "type": "object", "description": "Attached image or file" },
+        "createdAt": { "type": "string", "description": "ISO timestamp of creation" }
+      },
+      "required": ["id", "channelId", "senderId", "senderName"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles and directory"
+    },
+    "/teams/{teamId}": {
+      "schema": "Team",
+      "description": "Teams and multiple managers/members"
+    },
+    "/team_invitations/{invitationId}": {
+      "schema": "TeamInvitation",
+      "description": "Invitations sent to users to join teams"
+    },
+    "/tasks/{taskId}": {
+      "schema": "Task",
+      "description": "Assigned tasks, completions, proofs and comments"
+    },
+    "/channels/{channelId}": {
+      "schema": "Channel",
+      "description": "Team discussion channels"
+    },
+    "/channels/{channelId}/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Messages posted in channel"
+    }
+  }
+}
