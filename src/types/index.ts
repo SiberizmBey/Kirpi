@@ -12,6 +12,7 @@ export interface AppUser {
   name: string;
   username?: string; // Custom username (e.g. ahmet_dev)
   email: string;
+  password?: string;
   title: string;
   avatarColor: string;
   avatarUrl?: string; // Real uploaded image (Base64 data URL)
@@ -136,3 +137,19 @@ export interface ChatMessage {
 }
 
 export type AppTheme = 'DARK' | 'LIGHT' | 'AMOLED' | 'SYSTEM';
+
+export interface ElectronAPI {
+  isElectron: boolean;
+  platform: string;
+  minimize: () => void;
+  maximize: () => void;
+  close: () => void;
+  isMaximized: () => Promise<boolean>;
+  onMaximizedChange: (callback: (isMaximized: boolean) => void) => () => void;
+}
+
+declare global {
+  interface Window {
+    electronAPI?: ElectronAPI;
+  }
+}

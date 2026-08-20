@@ -5,6 +5,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Plus, X, Calendar, User, Layers, Shield } from 'lucide-react';
 import { AppUser, Team, TaskPriority } from '../types';
 import { firebaseService } from '../services/firebaseService';
@@ -24,12 +25,11 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
   users,
   teams,
 }) => {
-  // Only teams that currentUser belongs to or manages
+  // Only teams where currentUser is MANAGER or CREATOR
   const myTeams = currentUser
     ? teams.filter(
         (t) =>
-          t.memberIds.includes(currentUser.id) ||
-          t.managerIds.includes(currentUser.id) ||
+          t.managerIds?.includes(currentUser.id) ||
           t.createdBy === currentUser.id
       )
     : [];
@@ -109,56 +109,58 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md animate-fade-in font-sans overflow-y-auto">
-      <div className="my-auto relative w-full max-w-lg rounded-xl bg-zinc-950 border border-zinc-800 p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-zinc-950 z-20 flex items-center justify-between border-b border-zinc-900 pb-3">
+  if (!isOpen) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 bg-[var(--modal-backdrop)] backdrop-blur-md font-sans overflow-y-auto">
+      <div className="my-auto relative w-full max-w-lg rounded-2xl bg-[var(--bg-modal)] border border-[var(--border-card)] p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-[var(--bg-modal)] z-20 flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
           <div>
-            <h3 className="text-base font-semibold text-white">Yeni Görev Dağıtımı</h3>
-            <p className="text-xs text-zinc-400 mt-0.5">
+            <h3 className="text-base font-semibold text-[var(--text-primary)]">Yeni Görev Dağıtımı</h3>
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5">
               Ekip üyenize yeni bir sorumluluk atayın.
             </p>
           </div>
-          <button onClick={onClose} className="text-zinc-500 hover:text-white cursor-pointer">
+          <button onClick={onClose} className="text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           <div>
-            <label className="block text-zinc-300 font-medium mb-1">GÖREV BAŞLIĞI *</label>
+            <label className="block text-[var(--text-secondary)] font-medium mb-1">GÖREV BAŞLIĞI *</label>
             <input
               type="text"
               required
               placeholder="Örn: Mobil responsive testleri ve onay süreci"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full p-2.5 rounded-lg bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-500 focus:border-zinc-600 outline-none text-xs"
+              className="w-full p-2.5 rounded-lg bg-[var(--bg-input)] border border-[var(--border-input)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:border-purple-500 outline-none text-xs"
             />
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-medium mb-1">GÖREV DETAYLARI & AÇIKLAMA</label>
+            <label className="block text-[var(--text-secondary)] font-medium mb-1">GÖREV DETAYLARI & AÇIKLAMA</label>
             <textarea
               rows={3}
               placeholder="Görevin kapsamı, beklentiler ve dikkat edilecek noktalar..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-2.5 rounded-lg bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-500 focus:border-zinc-600 outline-none text-xs"
+              className="w-full p-2.5 rounded-lg bg-[var(--bg-input)] border border-[var(--border-input)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:border-purple-500 outline-none text-xs"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {myTeams.length > 0 && (
               <div>
-                <label className="block text-zinc-300 font-medium mb-1">İLİŞKİLİ EKİP</label>
+                <label className="block text-[var(--text-secondary)] font-medium mb-1">İLİŞKİLİ EKİP</label>
                 <select
                   value={teamId || selectedTeam?.id || ''}
                   onChange={(e) => setTeamId(e.target.value)}
-                  className="w-full p-2.5 rounded-lg bg-zinc-900 border border-zinc-800 text-white outline-none focus:border-zinc-600 text-xs"
+                  className="w-full p-2.5 rounded-lg bg-[var(--bg-input)] border border-[var(--border-input)] text-[var(--text-primary)] outline-none focus:border-purple-500 text-xs"
                 >
                   {myTeams.map((t) => (
-                    <option key={t.id} value={t.id}>
+                    <option key={t.id} value={t.id} className="bg-[var(--bg-modal)] text-[var(--text-primary)]">
                       {t.name}
                     </option>
                   ))}
@@ -167,19 +169,19 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
             )}
 
             <div>
-              <label className="block text-zinc-300 font-medium mb-1">ATANACAK EKİP ÜYESİ</label>
+              <label className="block text-[var(--text-secondary)] font-medium mb-1">ATANACAK EKİP ÜYESİ</label>
               <select
                 value={assignedTo || (eligibleUsers[0]?.id ?? '')}
                 onChange={(e) => setAssignedTo(e.target.value)}
-                className="w-full p-2.5 rounded-lg bg-zinc-900 border border-zinc-800 text-white outline-none focus:border-zinc-600 text-xs"
+                className="w-full p-2.5 rounded-lg bg-[var(--bg-input)] border border-[var(--border-input)] text-[var(--text-primary)] outline-none focus:border-purple-500 text-xs"
               >
                 {eligibleUsers.map((u) => (
-                  <option key={u.id} value={u.id}>
+                  <option key={u.id} value={u.id} className="bg-[var(--bg-modal)] text-[var(--text-primary)]">
                     {u.name} ({u.title})
                   </option>
                 ))}
                 {eligibleUsers.length === 0 && (
-                  <option value={currentUser?.id}>{currentUser?.name} (Kendim)</option>
+                  <option value={currentUser?.id} className="bg-[var(--bg-modal)] text-[var(--text-primary)]">{currentUser?.name} (Kendim)</option>
                 )}
               </select>
             </div>
@@ -187,43 +189,43 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-zinc-300 font-medium mb-1">ÖNCELİK SEVİYESİ</label>
+              <label className="block text-[var(--text-secondary)] font-medium mb-1">ÖNCELİK SEVİYESİ</label>
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value as TaskPriority)}
-                className="w-full p-2.5 rounded-lg bg-zinc-900 border border-zinc-800 text-white outline-none focus:border-zinc-600 text-xs"
+                className="w-full p-2.5 rounded-lg bg-[var(--bg-input)] border border-[var(--border-input)] text-[var(--text-primary)] outline-none focus:border-purple-500 text-xs"
               >
-                <option value="LOW">Düşük</option>
-                <option value="MEDIUM">Normal</option>
-                <option value="HIGH">Yüksek</option>
-                <option value="URGENT">Kritik / Acil</option>
+                <option value="LOW" className="bg-[var(--bg-modal)] text-[var(--text-primary)]">Düşük</option>
+                <option value="MEDIUM" className="bg-[var(--bg-modal)] text-[var(--text-primary)]">Normal</option>
+                <option value="HIGH" className="bg-[var(--bg-modal)] text-[var(--text-primary)]">Yüksek</option>
+                <option value="URGENT" className="bg-[var(--bg-modal)] text-[var(--text-primary)]">Kritik / Acil</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-zinc-300 font-medium mb-1">SON TESLİM TARİHİ</label>
+              <label className="block text-[var(--text-secondary)] font-medium mb-1">SON TESLİM TARİHİ</label>
               <input
                 type="date"
                 required
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full p-2.5 rounded-lg bg-zinc-900 border border-zinc-800 text-white outline-none focus:border-zinc-600 text-xs"
+                className="w-full p-2.5 rounded-lg bg-[var(--bg-input)] border border-[var(--border-input)] text-[var(--text-primary)] outline-none focus:border-purple-500 text-xs"
               />
             </div>
           </div>
 
-          <div className="pt-3 border-t border-zinc-900 flex justify-end gap-2.5">
+          <div className="pt-3 border-t border-[var(--border-subtle)] flex justify-end gap-2.5">
             <button
               type="button"
               onClick={onClose}
-              className="px-3.5 py-1.5 rounded-md bg-zinc-900 text-zinc-300 hover:text-white cursor-pointer"
+              className="px-3.5 py-1.5 rounded-md bg-[var(--bg-inner)] border border-[var(--border-card)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer"
             >
               İptal
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-1.5 rounded-md bg-white text-black text-xs font-semibold hover:bg-zinc-200 transition-all flex items-center gap-1.5 shadow-sm disabled:opacity-50 cursor-pointer"
+              className="px-4 py-1.5 rounded-md bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold transition-all flex items-center gap-1.5 shadow-sm disabled:opacity-50 cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>{isSubmitting ? 'Atanıyor...' : 'Görevi Ata'}</span>
@@ -231,6 +233,7 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

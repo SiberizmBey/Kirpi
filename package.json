@@ -1,14 +1,23 @@
 {
-  "name": "react-example",
+  "name": "kirpi-task-hub",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Kirpi Task & Team Hub - Modern Task & Team Management Desktop Application",
   "type": "module",
+  "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
     "build": "vite build",
     "preview": "vite preview",
-    "clean": "rm -rf dist server.js",
-    "lint": "tsc --noEmit"
+    "clean": "rm -rf dist dist-electron server.js",
+    "lint": "tsc --noEmit",
+    "electron": "electron .",
+    "electron:dev": "concurrently -k \"vite --port 3000\" \"electron .\"",
+    "electron:build": "vite build && electron-builder",
+    "electron:build:win": "vite build && electron-builder --win",
+    "electron:build:mac": "vite build && electron-builder --mac",
+    "electron:build:linux": "vite build && electron-builder --linux",
+    "electron:dir": "vite build && electron-builder --dir"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
@@ -24,13 +33,69 @@
     "vite": "^6.2.3"
   },
   "devDependencies": {
+    "@types/express": "^4.17.21",
     "@types/node": "^22.14.0",
     "autoprefixer": "^10.4.21",
+    "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3",
+    "electron": "^34.2.0",
+    "electron-builder": "^25.1.8",
     "esbuild": "^0.25.0",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",
-    "vite": "^6.2.3",
-    "@types/express": "^4.17.21"
+    "vite": "^6.2.3"
+  },
+  "build": {
+    "appId": "com.kirpi.taskhub",
+    "productName": "Kirpi Task & Team Hub",
+    "copyright": "Copyright © 2026 Kirpi Hub",
+    "directories": {
+      "output": "dist-electron",
+      "buildResources": "build"
+    },
+    "icon": "public/icon.ico",
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Kirpi Task Hub"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "category": "public.app-category.productivity"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Office"
+    }
   }
 }

@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Users,
   Plus,
@@ -291,13 +292,13 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
   return (
     <div id="kirpi-teams-view" className="space-y-6 animate-fade-in font-sans">
       {/* Top Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-xl bg-zinc-950 border border-zinc-800">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-card)]">
         <div>
-          <h1 className="text-xl font-semibold text-white tracking-tight flex items-center gap-2.5">
-            <Users className="w-5 h-5 text-zinc-400" />
+          <h1 className="text-xl font-semibold text-[var(--text-primary)] tracking-tight flex items-center gap-2.5">
+            <Users className="w-5 h-5 text-[var(--text-secondary)]" />
             <span>Çalışma Ekiplerim ({myTeams.length})</span>
           </h1>
-          <p className="text-xs text-zinc-400 mt-1">
+          <p className="text-xs text-[var(--text-secondary)] mt-1">
             Dahil olduğunuz ekipleri görüntüleyin, tam e-posta adresiyle güvenli davetler gönderin ve ekip içi rolleri yönetin.
           </p>
         </div>
@@ -306,7 +307,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
           {currentUser ? (
             <button
               onClick={() => setIsCreateModalOpen(true)}
-              className="px-3.5 py-1.5 rounded-md bg-white text-black text-xs font-semibold hover:bg-zinc-200 transition-all flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
+              className="px-3.5 py-1.5 rounded-md bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold transition-all flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
             >
               <Plus className="w-4 h-4 stroke-[2.5]" />
               <span>Yeni Ekip Oluştur</span>
@@ -314,7 +315,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
           ) : (
             <button
               onClick={onOpenAuth}
-              className="px-3.5 py-1.5 rounded-md bg-white text-black text-xs font-semibold hover:bg-zinc-200 transition-all cursor-pointer"
+              className="px-3.5 py-1.5 rounded-md bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold transition-all cursor-pointer"
             >
               Giriş Yap
             </button>
@@ -324,13 +325,13 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
 
       {/* Empty State */}
       {myTeams.length === 0 && (
-        <div className="p-10 rounded-xl bg-zinc-950 border border-zinc-800 text-center max-w-xl mx-auto space-y-4 my-8">
-          <div className="w-12 h-12 rounded-full bg-zinc-900 flex items-center justify-center mx-auto text-zinc-400 border border-zinc-800">
+        <div className="p-10 rounded-xl bg-[var(--bg-card)] border border-[var(--border-card)] text-center max-w-xl mx-auto space-y-4 my-8">
+          <div className="w-12 h-12 rounded-full bg-[var(--bg-inner)] flex items-center justify-center mx-auto text-[var(--text-muted)] border border-[var(--border-card)]">
             <Layers className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-base font-semibold text-white">Dahil Olduğunuz Ekip Bulunmuyor</h3>
-            <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
+            <h3 className="text-base font-semibold text-[var(--text-primary)]">Dahil Olduğunuz Ekip Bulunmuyor</h3>
+            <p className="text-xs text-[var(--text-secondary)] mt-1.5 leading-relaxed">
               Kendi çalışma grubunuzu oluşturmak için yukarıdaki "Yeni Ekip Oluştur" butonunu kullanabilir veya bir ekip yöneticisinin e-posta adresinize davet iletmesini bekleyebilirsiniz.
             </p>
           </div>
@@ -338,7 +339,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
           {currentUser && (
             <button
               onClick={() => setIsCreateModalOpen(true)}
-              className="px-4 py-2 rounded-lg bg-white text-black font-semibold text-xs hover:bg-zinc-200 transition-all cursor-pointer shadow-sm inline-flex items-center gap-2"
+              className="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs transition-all cursor-pointer shadow-sm inline-flex items-center gap-2"
             >
               <Plus className="w-4 h-4 stroke-[2.5]" />
               <span>İlk Ekibinizi Oluşturun</span>
@@ -373,7 +374,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
           return (
             <div
               key={team.id}
-              className="vercel-card p-5 rounded-xl space-y-5 border border-zinc-800 bg-zinc-950 flex flex-col justify-between shadow-lg"
+              className="vercel-card p-5 rounded-xl space-y-5 border border-[var(--border-card)] bg-[var(--bg-card)] flex flex-col justify-between shadow-sm"
             >
               <div className="space-y-4">
                 {/* Team Header with Logo / Color */}
@@ -383,31 +384,31 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                       <img
                         src={team.logoUrl}
                         alt={team.name}
-                        className="w-12 h-12 rounded-xl object-cover border border-zinc-700 shadow-md flex-shrink-0"
+                        className="w-12 h-12 rounded-xl object-cover border border-[var(--border-subtle)] shadow-sm flex-shrink-0"
                       />
                     ) : (
                       <div
-                        className="w-12 h-12 rounded-xl flex items-center justify-center text-base font-bold text-white uppercase shadow-md flex-shrink-0"
-                        style={{ backgroundColor: team.color || '#0070f3' }}
+                        className="w-12 h-12 rounded-xl flex items-center justify-center text-base font-bold text-white uppercase shadow-sm flex-shrink-0"
+                        style={{ backgroundColor: team.color || '#a855f7' }}
                       >
                         {team.name.charAt(0)}
                       </div>
                     )}
                     <div>
                       <div className="flex items-center gap-2">
-                        <h2 className="text-base font-semibold text-white">{team.name}</h2>
+                        <h2 className="text-base font-semibold text-[var(--text-primary)]">{team.name}</h2>
                         {team.createdBy === currentUser?.id && (
-                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-400 font-mono-code flex items-center gap-1">
-                            <Crown className="w-2.5 h-2.5 text-amber-400" /> Kurucu
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-500 font-mono-code flex items-center gap-1">
+                            <Crown className="w-2.5 h-2.5 text-amber-500" /> Kurucu
                           </span>
                         )}
                         {isTeamManager && (
-                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-950/80 border border-emerald-800/80 text-emerald-400 font-mono-code">
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 font-mono-code">
                             Yöneticisiniz
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-zinc-400 mt-0.5 leading-relaxed">{team.description}</p>
+                      <p className="text-xs text-[var(--text-secondary)] mt-0.5 leading-relaxed">{team.description}</p>
                     </div>
                   </div>
 
@@ -415,14 +416,14 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => openEditModal(team)}
-                        className="p-1.5 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-900 transition-colors cursor-pointer"
+                        className="p-1.5 rounded-md text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-inner)] transition-colors cursor-pointer"
                         title="Ekip Bilgilerini & Üyeleri Düzenle"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleDeleteTeam(team.id)}
-                        className="p-1.5 rounded-md text-zinc-600 hover:text-red-400 hover:bg-zinc-900 transition-colors cursor-pointer"
+                        className="p-1.5 rounded-md text-[var(--text-muted)] hover:text-red-500 hover:bg-[var(--bg-inner)] transition-colors cursor-pointer"
                         title="Ekibi Sil"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -433,15 +434,15 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
 
                 {/* Managers Section */}
                 <div className="space-y-1.5">
-                  <span className="text-[10px] font-mono-code text-zinc-500 uppercase tracking-wider flex items-center gap-1">
-                    <Shield className="w-3 h-3 text-emerald-400" />
+                  <span className="text-[10px] font-mono-code text-[var(--text-muted)] uppercase tracking-wider flex items-center gap-1">
+                    <Shield className="w-3 h-3 text-emerald-500" />
                     Ekip Yöneticileri ({managers.length})
                   </span>
                   <div className="flex flex-wrap gap-1.5">
                     {managers.map((mgr) => (
                       <div
                         key={mgr.id}
-                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-950/30 border border-emerald-800/40 text-emerald-300 text-xs"
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 text-xs"
                       >
                         {mgr.avatarUrl ? (
                           <img
@@ -457,8 +458,8 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                             {mgr.name.charAt(0)}
                           </div>
                         )}
-                        <span className="font-medium">{mgr.name}</span>
-                        {mgr.id === currentUser?.id && <span className="text-[10px] text-zinc-400">(Siz)</span>}
+                        <span className="font-medium text-[var(--text-primary)]">{mgr.name}</span>
+                        {mgr.id === currentUser?.id && <span className="text-[10px] text-[var(--text-muted)]">(Siz)</span>}
                       </div>
                     ))}
                   </div>
@@ -466,15 +467,15 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
 
                 {/* Members Section */}
                 <div className="space-y-1.5">
-                  <span className="text-[10px] font-mono-code text-zinc-500 uppercase tracking-wider flex items-center gap-1">
-                    <UserCheck className="w-3 h-3 text-blue-400" />
+                  <span className="text-[10px] font-mono-code text-[var(--text-muted)] uppercase tracking-wider flex items-center gap-1">
+                    <UserCheck className="w-3 h-3 text-purple-400" />
                     Ekip Üyeleri ({members.length})
                   </span>
                   <div className="flex flex-wrap gap-1.5">
                     {members.map((mem) => (
                       <div
                         key={mem.id}
-                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs"
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[var(--bg-inner)] border border-[var(--border-card)] text-[var(--text-secondary)] text-xs"
                       >
                         {mem.avatarUrl ? (
                           <img
@@ -485,28 +486,28 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                         ) : (
                           <div
                             className="w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold text-white uppercase"
-                            style={{ backgroundColor: mem.avatarColor || '#0070f3' }}
+                            style={{ backgroundColor: mem.avatarColor || '#a855f7' }}
                           >
                             {mem.name.charAt(0)}
                           </div>
                         )}
-                        <span>{mem.name}</span>
-                        {mem.id === currentUser?.id && <span className="text-[10px] text-zinc-500">(Siz)</span>}
+                        <span className="text-[var(--text-primary)]">{mem.name}</span>
+                        {mem.id === currentUser?.id && <span className="text-[10px] text-[var(--text-muted)]">(Siz)</span>}
                       </div>
                     ))}
                     {members.length === 0 && (
-                      <span className="text-xs text-zinc-600 italic">Henüz üye katılmadı</span>
+                      <span className="text-xs text-[var(--text-muted)] italic">Henüz üye katılmadı</span>
                     )}
                   </div>
                 </div>
 
                 {/* MANAGER ONLY: Pending Approvals & Invitations Trackers */}
                 {isTeamManager && (
-                  <div className="space-y-2.5 pt-2 border-t border-zinc-900">
+                  <div className="space-y-2.5 pt-2 border-t border-[var(--border-subtle)]">
                     {/* Awaiting Manager Approval */}
                     {pendingApprovals.length > 0 && (
-                      <div className="p-3 rounded-lg bg-emerald-950/20 border border-emerald-800/40 space-y-2">
-                        <div className="flex items-center justify-between text-xs text-emerald-400 font-medium">
+                      <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30 space-y-2">
+                        <div className="flex items-center justify-between text-xs text-emerald-500 font-medium">
                           <span className="flex items-center gap-1.5">
                             <ShieldAlert className="w-3.5 h-3.5" /> Katılım Onayı Bekleyenler ({pendingApprovals.length})
                           </span>
@@ -515,16 +516,16 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                           {pendingApprovals.map((inv) => (
                             <div
                               key={inv.id}
-                              className="p-2 rounded bg-zinc-900/80 border border-zinc-800 flex items-center justify-between text-xs"
+                              className="p-2 rounded bg-[var(--bg-modal)] border border-[var(--border-subtle)] flex items-center justify-between text-xs"
                             >
                               <div>
-                                <p className="font-semibold text-white">{inv.invitedUserName || inv.invitedEmail}</p>
-                                <p className="text-[10px] text-zinc-400">{inv.invitedEmail}</p>
+                                <p className="font-semibold text-[var(--text-primary)]">{inv.invitedUserName || inv.invitedEmail}</p>
+                                <p className="text-[10px] text-[var(--text-secondary)]">{inv.invitedEmail}</p>
                               </div>
                               <div className="flex items-center gap-1.5">
                                 <button
                                   onClick={() => handleRejectJoin(inv.id)}
-                                  className="px-2 py-1 rounded bg-zinc-800 text-zinc-400 hover:text-white text-[11px] cursor-pointer"
+                                  className="px-2 py-1 rounded bg-[var(--bg-inner)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-[11px] cursor-pointer"
                                 >
                                   Reddet
                                 </button>
@@ -543,10 +544,10 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
 
                     {/* Pending Sent Invitations (Can Revoke) */}
                     {pendingSentInvitations.length > 0 && (
-                      <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800 space-y-2 text-xs">
-                        <div className="flex items-center justify-between text-zinc-400">
+                      <div className="p-3 rounded-lg bg-[var(--bg-inner)] border border-[var(--border-card)] space-y-2 text-xs">
+                        <div className="flex items-center justify-between text-[var(--text-secondary)]">
                           <span className="flex items-center gap-1 font-mono-code text-[11px]">
-                            <Mail className="w-3.5 h-3.5 text-amber-400" />
+                            <Mail className="w-3.5 h-3.5 text-amber-500" />
                             Bekleyen E-Posta Davetleri ({pendingSentInvitations.length})
                           </span>
                         </div>
@@ -554,15 +555,15 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                           {pendingSentInvitations.map((inv) => (
                             <div
                               key={inv.id}
-                              className="p-2 rounded bg-zinc-950 border border-zinc-850 flex items-center justify-between text-xs"
+                              className="p-2 rounded bg-[var(--bg-card)] border border-[var(--border-subtle)] flex items-center justify-between text-xs"
                             >
                               <div>
-                                <p className="text-white font-mono-code text-[11px]">{inv.invitedEmail}</p>
-                                <p className="text-[10px] text-zinc-500">Kullanıcının kabulü bekleniyor...</p>
+                                <p className="text-[var(--text-primary)] font-mono-code text-[11px]">{inv.invitedEmail}</p>
+                                <p className="text-[10px] text-[var(--text-muted)]">Kullanıcının kabulü bekleniyor...</p>
                               </div>
                               <button
                                 onClick={() => handleRevokeInvitation(inv.id)}
-                                className="px-2 py-0.5 rounded text-[11px] text-red-400 hover:bg-red-950/40 border border-transparent hover:border-red-900/60 transition-all flex items-center gap-1 cursor-pointer"
+                                className="px-2 py-0.5 rounded text-[11px] text-red-500 hover:bg-red-500/10 border border-transparent hover:border-red-500/30 transition-all flex items-center gap-1 cursor-pointer"
                               >
                                 <Undo2 className="w-3 h-3" /> Daveti Geri Çek
                               </button>
@@ -576,14 +577,14 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
               </div>
 
               {/* Bottom Actions & Stats */}
-              <div className="pt-3 border-t border-zinc-900 flex items-center justify-between text-xs">
-                <div className="flex items-center gap-3 text-zinc-400">
+              <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs">
+                <div className="flex items-center gap-3 text-[var(--text-secondary)]">
                   <span className="flex items-center gap-1 font-mono-code text-[11px]">
-                    <Clock className="w-3 h-3 text-amber-400" />
+                    <Clock className="w-3 h-3 text-amber-500" />
                     {teamTasks.filter((t) => t.status !== 'COMPLETED').length} Bekleyen Görev
                   </span>
                   <span className="flex items-center gap-1 font-mono-code text-[11px]">
-                    <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                    <CheckCircle2 className="w-3 h-3 text-emerald-500" />
                     {teamTasks.filter((t) => t.status === 'COMPLETED').length} Tamamlanan
                   </span>
                 </div>
@@ -595,9 +596,9 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                       setInviteEmail('');
                       setInviteFeedback(null);
                     }}
-                    className="px-2.5 py-1.5 rounded-md bg-zinc-900 border border-zinc-800 text-zinc-200 hover:bg-zinc-800 text-xs font-medium transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                    className="px-2.5 py-1.5 rounded-md bg-[var(--bg-inner)] border border-[var(--border-card)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xs font-medium transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
                   >
-                    <Mail className="w-3.5 h-3.5 text-zinc-400" />
+                    <Mail className="w-3.5 h-3.5 text-[var(--text-muted)]" />
                     <span>E-Posta ile Davet Et</span>
                   </button>
                 )}
@@ -608,19 +609,19 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
       </div>
 
       {/* CREATE TEAM MODAL */}
-      {isCreateModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md animate-fade-in font-sans overflow-y-auto">
-          <div className="my-auto relative w-full max-w-lg rounded-xl bg-zinc-950 border border-zinc-800 p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-zinc-950 z-20 flex items-center justify-between border-b border-zinc-900 pb-3">
+      {isCreateModalOpen && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 bg-[var(--modal-backdrop)] backdrop-blur-md font-sans overflow-y-auto">
+          <div className="my-auto relative w-full max-w-lg rounded-2xl bg-[var(--bg-modal)] border border-[var(--border-card)] p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-[var(--bg-modal)] z-20 flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
               <div>
-                <h3 className="text-base font-semibold text-white">Yeni Çalışma Ekibi Oluştur</h3>
-                <p className="text-xs text-zinc-400 mt-0.5">
+                <h3 className="text-base font-semibold text-[var(--text-primary)]">Yeni Çalışma Ekibi Oluştur</h3>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
                   Ekip adı, logosu ve çalışma kapsamını belirleyin. Ekip yöneticisi otomatik olarak siz olacaksınız.
                 </p>
               </div>
               <button
                 onClick={() => setIsCreateModalOpen(false)}
-                className="text-zinc-500 hover:text-white cursor-pointer p-1 rounded-md hover:bg-zinc-900"
+                className="text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer p-1 rounded-md hover:bg-[var(--bg-inner)]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -629,17 +630,17 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
             <form onSubmit={handleCreateTeam} className="space-y-4 text-xs">
               {/* Team Logo Upload */}
               <div>
-                <label className="block text-zinc-300 font-medium mb-1.5">EKİP LOGOSU / GÖRSELİ</label>
-                <div className="flex items-center gap-3.5 p-3 rounded-lg bg-zinc-900/60 border border-zinc-800">
+                <label className="block text-[var(--text-secondary)] font-medium mb-1.5">EKİP LOGOSU / GÖRSELİ</label>
+                <div className="flex items-center gap-3.5 p-3 rounded-lg bg-[var(--bg-inner)] border border-[var(--border-card)]">
                   <div className="relative">
                     {newTeamLogo ? (
                       <img
                         src={newTeamLogo}
                         alt="Preview"
-                        className="w-12 h-12 rounded-xl object-cover border border-zinc-700 shadow-sm"
+                        className="w-12 h-12 rounded-xl object-cover border border-[var(--border-subtle)] shadow-sm"
                       />
                     ) : (
-                      <div className="w-12 h-12 rounded-xl bg-zinc-850 border border-zinc-750 flex items-center justify-center text-zinc-400">
+                      <div className="w-12 h-12 rounded-xl bg-[var(--bg-card)] border border-[var(--border-card)] flex items-center justify-center text-[var(--text-muted)]">
                         <ImageIcon className="w-5 h-5" />
                       </div>
                     )}
@@ -651,7 +652,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                   </div>
 
                   <div className="flex-1 space-y-1">
-                    <label className="inline-block px-3 py-1.5 rounded-md bg-white text-black hover:bg-zinc-200 text-xs font-semibold cursor-pointer transition-colors shadow-sm">
+                    <label className="inline-block px-3 py-1.5 rounded-md bg-[var(--bg-card)] border border-[var(--border-card)] hover:border-[var(--border-hover)] text-[var(--text-primary)] text-xs font-semibold cursor-pointer transition-colors shadow-sm">
                       Logo Yükle
                       <input
                         type="file"
@@ -664,55 +665,55 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                       <button
                         type="button"
                         onClick={() => setNewTeamLogo(undefined)}
-                        className="block text-[11px] text-red-400 hover:text-red-300 cursor-pointer"
+                        className="block text-[11px] text-red-500 hover:text-red-400 cursor-pointer"
                       >
                         Logoyu Kaldır
                       </button>
                     )}
-                    <p className="text-[10px] text-zinc-500">Kare görsel önerilir (JPG, PNG)</p>
+                    <p className="text-[10px] text-[var(--text-muted)]">Kare görsel önerilir (JPG, PNG)</p>
                   </div>
                 </div>
               </div>
 
               <div>
-                <label className="block text-zinc-300 font-medium mb-1">EKİP ADI *</label>
+                <label className="block text-[var(--text-secondary)] font-medium mb-1">EKİP ADI *</label>
                 <input
                   type="text"
                   required
                   placeholder="Örn: Mobil Geliştirme Grubu, Siber Güvenlik Birimi..."
                   value={newTeamName}
                   onChange={(e) => setNewTeamName(e.target.value)}
-                  className="w-full p-2.5 rounded-lg bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-500 focus:border-zinc-600 outline-none text-xs"
+                  className="w-full p-2.5 rounded-lg bg-[var(--bg-input)] border border-[var(--border-input)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:border-purple-500 outline-none text-xs"
                 />
               </div>
 
               <div>
-                <label className="block text-zinc-300 font-medium mb-1">AÇIKLAMA</label>
+                <label className="block text-[var(--text-secondary)] font-medium mb-1">AÇIKLAMA</label>
                 <textarea
                   rows={3}
                   placeholder="Ekibin sorumluluk alanı, hedefleri veya çalışma kapsamı..."
                   value={newTeamDesc}
                   onChange={(e) => setNewTeamDesc(e.target.value)}
-                  className="w-full p-2.5 rounded-lg bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-500 focus:border-zinc-600 outline-none text-xs"
+                  className="w-full p-2.5 rounded-lg bg-[var(--bg-input)] border border-[var(--border-input)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:border-purple-500 outline-none text-xs"
                 />
               </div>
 
-              <div className="p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 text-[11px] text-zinc-400">
+              <div className="p-3 rounded-lg bg-[var(--bg-inner)] border border-[var(--border-card)] text-[11px] text-[var(--text-secondary)]">
                 💡 Ekibi oluşturduktan sonra ekip kartındaki <strong>"E-Posta ile Davet Et"</strong> butonuna basarak üyelerinizi doğrudan e-posta adresleri üzerinden davet edebilirsiniz.
               </div>
 
-              <div className="pt-3 border-t border-zinc-900 flex justify-end gap-2.5">
+              <div className="pt-3 border-t border-[var(--border-subtle)] flex justify-end gap-2.5">
                 <button
                   type="button"
                   onClick={() => setIsCreateModalOpen(false)}
-                  className="px-3.5 py-1.5 rounded-md bg-zinc-900 text-zinc-300 hover:text-white cursor-pointer"
+                  className="px-3.5 py-1.5 rounded-md bg-[var(--bg-inner)] border border-[var(--border-card)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer"
                 >
                   İptal
                 </button>
                 <button
                   type="submit"
                   disabled={isCreating || isProcessingImg}
-                  className="px-4 py-1.5 rounded-md bg-white text-black text-xs font-semibold hover:bg-zinc-200 transition-all flex items-center gap-1.5 shadow-sm disabled:opacity-50 cursor-pointer"
+                  className="px-4 py-1.5 rounded-md bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold transition-all flex items-center gap-1.5 shadow-sm disabled:opacity-50 cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
                   <span>{isCreating ? 'Oluşturuluyor...' : 'Ekibi Oluştur'}</span>
@@ -720,23 +721,24 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* EDIT TEAM MODAL & TEAM ROLE MANAGEMENT */}
-      {editingTeam && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md animate-fade-in font-sans overflow-y-auto">
-          <div className="my-auto relative w-full max-w-lg rounded-xl bg-zinc-950 border border-zinc-800 p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-zinc-950 z-20 flex items-center justify-between border-b border-zinc-900 pb-3">
+      {editingTeam && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 bg-[var(--modal-backdrop)] backdrop-blur-md font-sans overflow-y-auto">
+          <div className="my-auto relative w-full max-w-lg rounded-2xl bg-[var(--bg-modal)] border border-[var(--border-card)] p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-[var(--bg-modal)] z-20 flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
               <div>
-                <h3 className="text-base font-semibold text-white">Ekibi Düzenle & Üye Rolleri</h3>
-                <p className="text-xs text-zinc-400 mt-0.5">
+                <h3 className="text-base font-semibold text-[var(--text-primary)]">Ekibi Düzenle & Üye Rolleri</h3>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
                   "{editingTeam.name}" ekibinin bilgilerini, görselini ve üyelerin yönetici/üye yetkilerini düzenleyin.
                 </p>
               </div>
               <button
                 onClick={() => setEditingTeam(null)}
-                className="text-zinc-500 hover:text-white cursor-pointer p-1 rounded-md hover:bg-zinc-900"
+                className="text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer p-1 rounded-md hover:bg-[var(--bg-inner)]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -745,17 +747,17 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
             <form onSubmit={handleSaveTeamEdit} className="space-y-4 text-xs">
               {/* Edit Logo */}
               <div>
-                <label className="block text-zinc-300 font-medium mb-1.5">EKİP LOGOSU / GÖRSELİ</label>
-                <div className="flex items-center gap-3.5 p-3 rounded-lg bg-zinc-900/60 border border-zinc-800">
+                <label className="block text-[var(--text-secondary)] font-medium mb-1.5">EKİP LOGOSU / GÖRSELİ</label>
+                <div className="flex items-center gap-3.5 p-3 rounded-lg bg-[var(--bg-inner)] border border-[var(--border-card)]">
                   <div className="relative">
                     {editLogo ? (
                       <img
                         src={editLogo}
                         alt="Preview"
-                        className="w-12 h-12 rounded-xl object-cover border border-zinc-700 shadow-sm"
+                        className="w-12 h-12 rounded-xl object-cover border border-[var(--border-subtle)] shadow-sm"
                       />
                     ) : (
-                      <div className="w-12 h-12 rounded-xl bg-zinc-850 border border-zinc-750 flex items-center justify-center text-zinc-400">
+                      <div className="w-12 h-12 rounded-xl bg-[var(--bg-card)] border border-[var(--border-card)] flex items-center justify-center text-[var(--text-muted)]">
                         <ImageIcon className="w-5 h-5" />
                       </div>
                     )}
@@ -767,7 +769,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                   </div>
 
                   <div className="flex-1 space-y-1">
-                    <label className="inline-block px-3 py-1.5 rounded-md bg-white text-black hover:bg-zinc-200 text-xs font-semibold cursor-pointer transition-colors shadow-sm">
+                    <label className="inline-block px-3 py-1.5 rounded-md bg-[var(--bg-card)] border border-[var(--border-card)] hover:border-[var(--border-hover)] text-[var(--text-primary)] text-xs font-semibold cursor-pointer transition-colors shadow-sm">
                       Görsel Değiştir
                       <input
                         type="file"
@@ -780,48 +782,48 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                       <button
                         type="button"
                         onClick={() => setEditLogo(undefined)}
-                        className="block text-[11px] text-red-400 hover:text-red-300 cursor-pointer"
+                        className="block text-[11px] text-red-500 hover:text-red-400 cursor-pointer"
                       >
                         Görseli Kaldır
                       </button>
                     )}
-                    <p className="text-[10px] text-zinc-500">JPG, PNG veya WEBP</p>
+                    <p className="text-[10px] text-[var(--text-muted)]">JPG, PNG veya WEBP</p>
                   </div>
                 </div>
               </div>
 
               <div>
-                <label className="block text-zinc-300 font-medium mb-1">EKİP ADI *</label>
+                <label className="block text-[var(--text-secondary)] font-medium mb-1">EKİP ADI *</label>
                 <input
                   type="text"
                   required
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="w-full p-2.5 rounded-lg bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-500 focus:border-zinc-600 outline-none text-xs"
+                  className="w-full p-2.5 rounded-lg bg-[var(--bg-input)] border border-[var(--border-input)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:border-purple-500 outline-none text-xs"
                 />
               </div>
 
               <div>
-                <label className="block text-zinc-300 font-medium mb-1">AÇIKLAMA</label>
+                <label className="block text-[var(--text-secondary)] font-medium mb-1">AÇIKLAMA</label>
                 <textarea
                   rows={2}
                   value={editDesc}
                   onChange={(e) => setEditDesc(e.target.value)}
-                  className="w-full p-2.5 rounded-lg bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-500 focus:border-zinc-600 outline-none text-xs"
+                  className="w-full p-2.5 rounded-lg bg-[var(--bg-input)] border border-[var(--border-input)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:border-purple-500 outline-none text-xs"
                 />
               </div>
 
               {/* Members in this team with Role Toggle and Removal */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-zinc-300 font-medium flex items-center gap-1.5">
-                    <UserCog className="w-3.5 h-3.5 text-zinc-400" />
+                  <label className="text-[var(--text-secondary)] font-medium flex items-center gap-1.5">
+                    <UserCog className="w-3.5 h-3.5 text-[var(--text-muted)]" />
                     EKİPTEKİ ÜYELER & ROLLER ({editingTeam.memberIds.length})
                   </label>
-                  <span className="text-[10px] text-zinc-500">Yetkileri sadece ekip yöneticisi değiştirebilir</span>
+                  <span className="text-[10px] text-[var(--text-muted)]">Yetkileri sadece ekip yöneticisi değiştirebilir</span>
                 </div>
 
-                <div className="max-h-52 overflow-y-auto space-y-1.5 p-2 rounded-lg bg-zinc-900 border border-zinc-800">
+                <div className="max-h-52 overflow-y-auto space-y-1.5 p-2 rounded-lg bg-[var(--bg-inner)] border border-[var(--border-card)]">
                   {users
                     .filter((u) => editingTeam.memberIds.includes(u.id))
                     .map((mem) => {
@@ -831,7 +833,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                       return (
                         <div
                           key={mem.id}
-                          className="p-2.5 rounded-md flex items-center justify-between bg-zinc-950 border border-zinc-850 text-xs"
+                          className="p-2.5 rounded-md flex items-center justify-between bg-[var(--bg-card)] border border-[var(--border-subtle)] text-xs"
                         >
                           <div className="flex items-center gap-2.5">
                             {mem.avatarUrl ? (
@@ -839,21 +841,21 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                             ) : (
                               <div
                                 className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white uppercase"
-                                style={{ backgroundColor: mem.avatarColor || '#0070f3' }}
+                                style={{ backgroundColor: mem.avatarColor || '#a855f7' }}
                               >
                                 {mem.name.charAt(0)}
                               </div>
                             )}
                             <div>
                               <div className="flex items-center gap-1.5">
-                                <span className="text-white font-medium">{mem.name}</span>
+                                <span className="text-[var(--text-primary)] font-medium">{mem.name}</span>
                                 {isCreator && (
-                                  <span className="text-[9px] px-1 py-0.2 rounded bg-amber-950 text-amber-300 border border-amber-800/50 font-mono-code">
+                                  <span className="text-[9px] px-1 py-0.2 rounded bg-amber-500/10 text-amber-500 border border-amber-500/30 font-mono-code">
                                     Kurucu
                                   </span>
                                 )}
                               </div>
-                              <p className="text-[10px] text-zinc-500 font-mono-code">{mem.email}</p>
+                              <p className="text-[10px] text-[var(--text-muted)] font-mono-code">{mem.email}</p>
                             </div>
                           </div>
 
@@ -868,8 +870,8 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                               }}
                               className={`text-[11px] px-2 py-1 rounded border outline-none cursor-pointer ${
                                 isMgr
-                                  ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800'
-                                  : 'bg-zinc-900 text-zinc-300 border-zinc-700'
+                                  ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30'
+                                  : 'bg-[var(--bg-inner)] text-[var(--text-secondary)] border-[var(--border-input)]'
                               }`}
                             >
                               <option value="MEMBER">Üye</option>
@@ -880,7 +882,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                               <button
                                 type="button"
                                 onClick={() => handleRemoveMember(editingTeam, mem.id)}
-                                className="text-[10px] px-2 py-1 rounded bg-red-950/40 hover:bg-red-900/60 border border-red-900/50 text-red-300 cursor-pointer"
+                                className="text-[10px] px-2 py-1 rounded bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-500 cursor-pointer"
                                 title="Ekipten Çıkar"
                               >
                                 Çıkar
@@ -893,18 +895,18 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-zinc-900 flex justify-end gap-2.5">
+              <div className="pt-3 border-t border-[var(--border-subtle)] flex justify-end gap-2.5">
                 <button
                   type="button"
                   onClick={() => setEditingTeam(null)}
-                  className="px-3.5 py-1.5 rounded-md bg-zinc-900 text-zinc-300 hover:text-white cursor-pointer"
+                  className="px-3.5 py-1.5 rounded-md bg-[var(--bg-inner)] border border-[var(--border-card)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer"
                 >
                   İptal
                 </button>
                 <button
                   type="submit"
                   disabled={isSavingEdit || isProcessingImg}
-                  className="px-4 py-1.5 rounded-md bg-white text-black text-xs font-semibold hover:bg-zinc-200 transition-all flex items-center gap-1.5 shadow-sm disabled:opacity-50 cursor-pointer"
+                  className="px-4 py-1.5 rounded-md bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold transition-all flex items-center gap-1.5 shadow-sm disabled:opacity-50 cursor-pointer"
                 >
                   <Check className="w-3.5 h-3.5 stroke-[2.5]" />
                   <span>{isSavingEdit ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}</span>
@@ -912,23 +914,24 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* SEND EMAIL-BASED TEAM INVITATION MODAL */}
-      {invitingTeam && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md animate-fade-in font-sans overflow-y-auto">
-          <div className="my-auto relative w-full max-w-md rounded-xl bg-zinc-950 border border-zinc-800 p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-zinc-950 z-20 flex items-center justify-between border-b border-zinc-900 pb-3">
+      {invitingTeam && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 bg-[var(--modal-backdrop)] backdrop-blur-md font-sans overflow-y-auto">
+          <div className="my-auto relative w-full max-w-md rounded-2xl bg-[var(--bg-modal)] border border-[var(--border-card)] p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-[var(--bg-modal)] z-20 flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
               <div>
-                <h3 className="text-base font-semibold text-white">E-Posta ile Ekip Daveti Gönder</h3>
-                <p className="text-xs text-zinc-400 mt-0.5">
+                <h3 className="text-base font-semibold text-[var(--text-primary)]">E-Posta ile Ekip Daveti Gönder</h3>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
                   "{invitingTeam.name}" ekibine katılmaları için tam e-posta adresi ile davet iletin.
                 </p>
               </div>
               <button
                 onClick={() => setInvitingTeam(null)}
-                className="text-zinc-500 hover:text-white cursor-pointer p-1 rounded-md hover:bg-zinc-900"
+                className="text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer p-1 rounded-md hover:bg-[var(--bg-inner)]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -938,14 +941,14 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
               <div
                 className={`p-3.5 rounded-lg border text-xs flex items-start gap-2.5 ${
                   inviteFeedback.type === 'success'
-                    ? 'bg-emerald-950/40 border-emerald-800 text-emerald-300'
-                    : 'bg-red-950/40 border-red-800 text-red-300'
+                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500'
+                    : 'bg-red-500/10 border-red-500/30 text-red-500'
                 }`}
               >
                 {inviteFeedback.type === 'success' ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
                 ) : (
-                  <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
+                  <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
                 )}
                 <span className="leading-relaxed">{inviteFeedback.message}</span>
               </div>
@@ -953,37 +956,37 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
 
             <form onSubmit={handleSendEmailInvite} className="space-y-4 text-xs">
               <div>
-                <label className="block text-zinc-300 font-medium mb-1.5">
+                <label className="block text-[var(--text-secondary)] font-medium mb-1.5">
                   DAVET EDİLECEK E-POSTA ADRESİ *
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <Mail className="w-4 h-4 text-[var(--text-muted)] absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="email"
                     required
                     placeholder="kullanici@sirket.com"
                     value={inviteEmail}
                     onChange={(e) => setInviteEmail(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2.5 rounded-lg bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-500 outline-none focus:border-zinc-600 text-xs font-mono-code"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-lg bg-[var(--bg-input)] border border-[var(--border-input)] text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none focus:border-purple-500 text-xs font-mono-code"
                   />
                 </div>
-                <p className="text-[11px] text-zinc-500 mt-1.5 leading-relaxed">
+                <p className="text-[11px] text-[var(--text-muted)] mt-1.5 leading-relaxed">
                   Güvenlik gereği kullanıcı araması yapılmaz. Tam e-posta adresi yazılmalıdır. Kullanıcı daveti onayladığında yönetici onayınıza düşecektir.
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-zinc-900 flex justify-end gap-2">
+              <div className="pt-3 border-t border-[var(--border-subtle)] flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setInvitingTeam(null)}
-                  className="px-3.5 py-1.5 rounded-md bg-zinc-900 text-zinc-300 hover:text-white cursor-pointer"
+                  className="px-3.5 py-1.5 rounded-md bg-[var(--bg-inner)] border border-[var(--border-card)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer"
                 >
                   Kapat
                 </button>
                 <button
                   type="submit"
                   disabled={!inviteEmail.trim() || isSendingInvite}
-                  className="px-4 py-1.5 rounded-md bg-white text-black text-xs font-semibold hover:bg-zinc-200 transition-all flex items-center gap-1.5 shadow-sm disabled:opacity-50 cursor-pointer"
+                  className="px-4 py-1.5 rounded-md bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold transition-all flex items-center gap-1.5 shadow-sm disabled:opacity-50 cursor-pointer"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>{isSendingInvite ? 'Gönderiliyor...' : 'Davet Gönder'}</span>
@@ -991,7 +994,8 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

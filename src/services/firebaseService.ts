@@ -120,24 +120,48 @@ export class FirebaseService {
     name: string;
     username?: string;
     email: string;
+    password?: string;
     role?: UserRole;
     title?: string;
     avatarUrl?: string;
   }): Promise<AppUser> {
     const cleanEmail = params.email.trim().toLowerCase();
-    const cleanUsername = params.username ? params.username.trim().toLowerCase().replace(/[^a-z0-9_.-]/g, '') : '';
+    const cleanUsername = params.username ? params.username.trim().toLowerCase().replace(/^@/, '') : '';
     const cleanName = params.name.trim();
+    const cleanPassword = (params.password || '').trim();
 
-    // Check if email already exists in Firestore
+    if (!cleanUsername) {
+      throw new Error('Lütfen geçerli bir kullanıcı adı giriniz.');
+    }
+
+    if (!cleanEmail) {
+      throw new Error('Lütfen geçerli bir e-posta adresi giriniz.');
+    }
+
+    if (!cleanPassword) {
+      throw new Error('Lütfen hesabınız için bir şifre belirleyiniz.');
+    }
+
+    // Check if email or username already exists in Firestore
     const usersRef = collection(db, 'users');
-    const emailQuery = query(usersRef, where('email', '==', cleanEmail));
-    const emailSnap = await getDocs(emailQuery);
+    const allUsersSnap = await getDocs(usersRef);
 
-    if (!emailSnap.empty) {
+    const existingEmail = allUsersSnap.docs.some(
+      (d) => (d.data() as AppUser).email?.toLowerCase().trim() === cleanEmail
+    );
+    if (existingEmail) {
       throw new Error('Bu e-posta adresi ile kayıtlı bir hesap zaten var. Lütfen giriş yapın.');
     }
 
-    const userId = `usr_${Date.now()}_${cleanUsername || Math.random().toString(36).substring(2, 7)}`;
+    const existingUsername = allUsersSnap.docs.some(
+      (d) => (d.data() as AppUser).username?.toLowerCase().trim().replace(/^@/, '') === cleanUsername
+    );
+    if (existingUsername) {
+      throw new Error('Bu kullanıcı adı zaten kullanılıyor. Lütfen farklı bir kullanıcı adı seçin.');
+    }
+
+    const safeIdSuffix = cleanUsername.replace(/[^a-z0-9_]/g, '') || Math.random().toString(36).substring(2, 8);
+    const userId = `usr_${Date.now()}_${safeIdSuffix}`;
     const colors = ['#0070f3', '#10b981', '#f5a623', '#ec4899', '#8b5cf6', '#06b6d4'];
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
@@ -146,6 +170,8 @@ export class FirebaseService {
       name: cleanName,
       username: cleanUsername,
       email: cleanEmail,
+      password: cleanPassword,
+      role: params.role || 'MEMBER',
       title: params.title?.trim() || 'Ekip Üyesi',
       avatarColor: randomColor,
       status: 'ONLINE',
@@ -170,29 +196,49 @@ export class FirebaseService {
     }
   }
 
-  public async loginWithEmailOrUsername(identifier: string): Promise<AppUser> {
-    const cleanIdent = identifier.trim().toLowerCase();
+  public async loginWithEmailOrUsername(identifier: string, password?: string): Promise<AppUser> {
+    const cleanIdent = identifier.trim().toLowerCase().replace(/^@/, '');
+    const cleanPass = (password || '').trim();
+
     if (!cleanIdent) {
-      throw new Error('Lütfen e-posta veya kullanıcı adınızı girin.');
+      throw new Error('Lütfen kullanıcı adınızı veya e-posta adresinizi girin.');
+    }
+
+    if (!cleanPass) {
+      throw new Error('Lütfen şifrenizi girin.');
     }
 
     const usersRef = collection(db, 'users');
     const allUsersSnap = await getDocs(usersRef);
 
+    // STRICT: Only match by username or email. Ad Soyad (user.name) is explicitly rejected.
     const matchedDoc = allUsersSnap.docs.find((d) => {
       const u = d.data() as AppUser;
-      return (
-        u.email?.toLowerCase() === cleanIdent ||
-        u.username?.toLowerCase() === cleanIdent ||
-        u.name?.toLowerCase() === cleanIdent
-      );
+      const uUsername = (u.username || '').toLowerCase().trim().replace(/^@/, '');
+      const uEmail = (u.email || '').toLowerCase().trim();
+      return (uUsername && uUsername === cleanIdent) || (uEmail && uEmail === cleanIdent);
     });
 
     if (!matchedDoc) {
-      throw new Error('Kullanıcı bulunamadı. Lütfen bilgilerinizi kontrol edin veya yeni kayıt olun.');
+      throw new Error('Kullanıcı bulunamadı. Lütfen kullanıcı adınızı veya e-posta adresinizi kontrol edin.');
     }
 
     const user = matchedDoc.data() as AppUser;
+
+    // Strict password verification:
+    const storedPassword = (user.password || '').trim();
+    if (!storedPassword) {
+      // User existed in database prior to password enforcement - assign this password and update
+      try {
+        await updateDoc(doc(db, 'users', user.id), { password: cleanPass });
+        user.password = cleanPass;
+      } catch (e) {
+        console.warn('Could not update legacy user password:', e);
+      }
+    } else if (storedPassword !== cleanPass) {
+      throw new Error('Girdiğiniz şifre hatalı. Lütfen şifrenizi kontrol edip tekrar deneyin.');
+    }
+
     localStorage.setItem(STORAGE_ACTIVE_USER_KEY, user.id);
     this.attachUserListener(user.id);
     return user;
@@ -303,6 +349,26 @@ export class FirebaseService {
 
     try {
       await setDoc(doc(db, 'teams', teamId), cleanFirestoreData(newTeam));
+
+      // Auto-create isolated channels for this team
+      const teamGenelChan = {
+        id: `chan_${teamId}_genel`,
+        name: 'genel',
+        description: `${newTeam.name} genel sohbet ve iletişim kanalı`,
+        teamId: teamId,
+      };
+      const teamDuyuruChan = {
+        id: `chan_${teamId}_duyurular`,
+        name: 'görev-duyuruları',
+        description: `${newTeam.name} görev ve ekip duyuruları`,
+        teamId: teamId,
+      };
+      try {
+        await setDoc(doc(db, 'channels', teamGenelChan.id), cleanFirestoreData(teamGenelChan));
+        await setDoc(doc(db, 'channels', teamDuyuruChan.id), cleanFirestoreData(teamDuyuruChan));
+      } catch (ce) {
+        console.warn('Auto create team channels error:', ce);
+      }
 
       // Update participating users' teamIds array
       for (const uid of allMemberIds) {
@@ -587,10 +653,11 @@ export class FirebaseService {
     try {
       await setDoc(doc(db, 'tasks', taskId), cleanFirestoreData(newTask));
 
-      // Post notification to #görev-duyuruları channel
+      // Post notification to team's #görev-duyuruları channel or fallback
+      const targetChannelId = taskData.teamId ? `chan_${taskData.teamId}_duyurular` : 'chan-gorevler';
       try {
-        await this.sendMessage('chan-gorevler', {
-          channelId: 'chan-gorevler',
+        await this.sendMessage(targetChannelId, {
+          channelId: targetChannelId,
           senderId: taskData.assignedBy,
           senderName: taskData.assignedByName,
           senderRole: 'MANAGER',
@@ -842,6 +909,31 @@ export class FirebaseService {
       await deleteDoc(doc(db, 'tasks', taskId));
     } catch (error) {
       handleFirestoreError(error, OperationType.DELETE, path);
+    }
+  }
+
+  public async addTaskComment(
+    taskId: string,
+    comment: { userId: string; userName: string; text: string }
+  ): Promise<void> {
+    const path = `tasks/${taskId}`;
+    try {
+      const taskDocRef = doc(db, 'tasks', taskId);
+      const newComment = {
+        id: `c_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        userId: comment.userId,
+        userName: comment.userName,
+        text: comment.text.trim(),
+        createdAt: new Date().toISOString(),
+      };
+
+      await updateDoc(taskDocRef, cleanFirestoreData({
+        updatedAt: new Date().toISOString(),
+        comments: arrayUnion(cleanFirestoreData(newComment)),
+      }));
+    } catch (error) {
+      handleFirestoreError(error, OperationType.UPDATE, path);
+      throw error;
     }
   }
 

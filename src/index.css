@@ -1,189 +1,496 @@
 @import "tailwindcss";
 
 @layer base {
-    :root {
-        --font-sans: "Figtree", sans-serif;
-        --font-mono: monospace;
-    }
+  :root {
+    --font-sans: 'Figtree', sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
 
-    /* 1. Karanlık Mod (Dark) - User Specified Palette */
-    :root,
-    html[data-theme="dark"],
-    html.dark {
-        --bg-canvas: #0d0d0d;
-        --bg-card: #222222;
-        --bg-card-hover: #282828;
-        --bg-modal: #1e1e1e;
-        --bg-input: #171717;
-        --bg-inner: #1a1a1a;
-        --bg-island: rgba(34, 34, 34, 0.95);
-        --modal-backdrop: rgba(0, 0, 0, 0.75);
-        --border-subtle: #333333;
-        --border-card: #333333;
-        --border-input: #383838;
-        --border-hover: #4a4a4a;
-        --text-primary: #ededed;
-        --text-secondary: #a3a3a3;
-        --text-muted: #737373;
-        --accent: #a855f7;
-        --accent-hover: #9333ea;
-        --accent-active: #7e22ce;
-        --accent-subtle: rgba(168, 85, 247, 0.15);
-        --accent-border: rgba(168, 85, 247, 0.35);
-        --accent-text: #d8b4fe;
-        --btn-primary-bg: #a855f7;
-        --btn-primary-text: #ffffff;
-        --btn-primary-hover: #9333ea;
-        --badge-bg: rgba(168, 85, 247, 0.15);
-        --badge-border: rgba(168, 85, 247, 0.35);
-        --badge-text: #d8b4fe;
-        --scrollbar-track: #0d0d0d;
-        --scrollbar-thumb: #2a2a2a;
-        --scrollbar-thumb-hover: #a855f7;
-    }
+  /* 1. Karanlık Mod (Dark) - User Specified Palette */
+  :root, html[data-theme='dark'], html.dark {
+    --bg-canvas: #0d0d0d;
+    --bg-card: #222222;
+    --bg-card-hover: #282828;
+    --bg-modal: #1e1e1e;
+    --bg-input: #171717;
+    --bg-inner: #1a1a1a;
+    --bg-island: rgba(34, 34, 34, 0.95);
+    --modal-backdrop: rgba(0, 0, 0, 0.75);
+    --border-subtle: #333333;
+    --border-card: #333333;
+    --border-input: #383838;
+    --border-hover: #4a4a4a;
+    --text-primary: #ededed;
+    --text-secondary: #a3a3a3;
+    --text-muted: #737373;
+    --accent: #a855f7;
+    --accent-hover: #9333ea;
+    --accent-active: #7e22ce;
+    --accent-subtle: rgba(168, 85, 247, 0.15);
+    --accent-border: rgba(168, 85, 247, 0.35);
+    --accent-text: #d8b4fe;
+    --btn-primary-bg: #a855f7;
+    --btn-primary-text: #ffffff;
+    --btn-primary-hover: #9333ea;
+    --badge-bg: rgba(168, 85, 247, 0.15);
+    --badge-border: rgba(168, 85, 247, 0.35);
+    --badge-text: #d8b4fe;
+    --scrollbar-track: #0d0d0d;
+    --scrollbar-thumb: #2a2a2a;
+    --scrollbar-thumb-hover: #a855f7;
 
-    /* 2. Aydınlık Mod (Light) - User Specified Palette */
-    html[data-theme="light"],
-    html.light {
-        --bg-canvas: #f4f4f5;
-        --bg-card: #ffffff;
-        --bg-card-hover: #fafafa;
-        --bg-modal: #ffffff;
-        --bg-input: #f4f4f5;
-        --bg-inner: #f1f1f4;
-        --bg-island: rgba(255, 255, 255, 0.96);
-        --modal-backdrop: rgba(0, 0, 0, 0.45);
-        --border-subtle: #e4e4e7;
-        --border-card: #e4e4e7;
-        --border-input: #d4d4d8;
-        --border-hover: #a1a1aa;
-        --text-primary: #09090b;
-        --text-secondary: #52525b;
-        --text-muted: #71717a;
-        --accent: #7c3aed;
-        --accent-hover: #6d28d9;
-        --accent-active: #5b21b6;
-        --accent-subtle: rgba(124, 58, 237, 0.08);
-        --accent-border: rgba(124, 58, 237, 0.25);
-        --accent-text: #6d28d9;
-        --btn-primary-bg: #7c3aed;
-        --btn-primary-text: #ffffff;
-        --btn-primary-hover: #6d28d9;
-        --badge-bg: rgba(124, 58, 237, 0.1);
-        --badge-border: rgba(124, 58, 237, 0.25);
-        --badge-text: #6d28d9;
-        --scrollbar-track: #f4f4f5;
-        --scrollbar-thumb: #d4d4d8;
-        --scrollbar-thumb-hover: #7c3aed;
-    }
+    /* NexaVerse Brand Theme Variables */
+    --background: #0d0d0d;
+    --main-theme: #a855f7;
+    --theme-alt: #7e22ce;
+    --secondary: #171717;
+    --thirdy: #222222;
+    --border: #333333;
+    --border-alpha: #4a4a4a;
+    --text-color: #ededed;
+    --text-alt-color: #a3a3a3;
+    --s-main-theme: #c084fc;
+  }
 
-    /* 3. Amoled Mod (OLED Pure Black) */
-    html[data-theme="amoled"],
-    html.amoled {
-        --bg-canvas: #000000;
-        --bg-card: #09090b;
-        --bg-card-hover: #121215;
-        --bg-modal: #08080a;
-        --bg-input: #0c0c0e;
-        --bg-inner: #050506;
-        --bg-island: rgba(10, 10, 10, 0.96);
-        --modal-backdrop: rgba(0, 0, 0, 0.85);
-        --border-subtle: #27272a;
-        --border-card: #27272a;
-        --border-input: #27272a;
-        --border-hover: #3f3f46;
-        --text-primary: #ededed;
-        --text-secondary: #a1a1aa;
-        --text-muted: #71717a;
-        --accent: #a855f7;
-        --accent-hover: #9333ea;
-        --accent-active: #7e22ce;
-        --accent-subtle: rgba(168, 85, 247, 0.15);
-        --accent-border: rgba(168, 85, 247, 0.35);
-        --accent-text: #d8b4fe;
-        --btn-primary-bg: #a855f7;
-        --btn-primary-text: #ffffff;
-        --btn-primary-hover: #9333ea;
-        --badge-bg: rgba(168, 85, 247, 0.15);
-        --badge-border: rgba(168, 85, 247, 0.35);
-        --badge-text: #d8b4fe;
-        --scrollbar-track: #000000;
-        --scrollbar-thumb: #1f1f23;
-        --scrollbar-thumb-hover: #a855f7;
-    }
+  /* 2. Aydınlık Mod (Light) - User Specified Palette */
+  html[data-theme='light'], html.light {
+    --bg-canvas: #f4f4f5;
+    --bg-card: #ffffff;
+    --bg-card-hover: #fafafa;
+    --bg-modal: #ffffff;
+    --bg-input: #f4f4f5;
+    --bg-inner: #f1f1f4;
+    --bg-island: rgba(255, 255, 255, 0.96);
+    --modal-backdrop: rgba(0, 0, 0, 0.45);
+    --border-subtle: #e4e4e7;
+    --border-card: #e4e4e7;
+    --border-input: #d4d4d8;
+    --border-hover: #a1a1aa;
+    --text-primary: #09090b;
+    --text-secondary: #52525b;
+    --text-muted: #71717a;
+    --accent: #7c3aed;
+    --accent-hover: #6d28d9;
+    --accent-active: #5b21b6;
+    --accent-subtle: rgba(124, 58, 237, 0.08);
+    --accent-border: rgba(124, 58, 237, 0.25);
+    --accent-text: #6d28d9;
+    --btn-primary-bg: #7c3aed;
+    --btn-primary-text: #ffffff;
+    --btn-primary-hover: #6d28d9;
+    --badge-bg: rgba(124, 58, 237, 0.1);
+    --badge-border: rgba(124, 58, 237, 0.25);
+    --badge-text: #6d28d9;
+    --scrollbar-track: #f4f4f5;
+    --scrollbar-thumb: #d4d4d8;
+    --scrollbar-thumb-hover: #7c3aed;
 
-    body {
-        font-family: var(--font-sans);
-        background-color: var(--bg-canvas);
-        color: var(--text-primary);
-    }
+    /* NexaVerse Brand Theme Variables */
+    --background: #f4f4f5;
+    --main-theme: #7c3aed;
+    --theme-alt: #6d28d9;
+    --secondary: #ffffff;
+    --thirdy: #e4e4e7;
+    --border: #e4e4e7;
+    --border-alpha: #d4d4d8;
+    --text-color: #09090b;
+    --text-alt-color: #71717a;
+    --s-main-theme: #8b5cf6;
+  }
 
-    /* Sleek scrollbars adhering to theme */
-    ::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-        background: var(--scrollbar-track);
-    }
-    ::-webkit-scrollbar-thumb {
-        background: var(--scrollbar-thumb);
-        border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-        background: var(--scrollbar-thumb-hover);
-    }
+  /* 3. Amoled Mod (OLED Pure Black) */
+  html[data-theme='amoled'], html.amoled {
+    --bg-canvas: #000000;
+    --bg-card: #09090b;
+    --bg-card-hover: #121215;
+    --bg-modal: #08080a;
+    --bg-input: #0c0c0e;
+    --bg-inner: #050506;
+    --bg-island: rgba(10, 10, 10, 0.96);
+    --modal-backdrop: rgba(0, 0, 0, 0.85);
+    --border-subtle: #27272a;
+    --border-card: #27272a;
+    --border-input: #27272a;
+    --border-hover: #3f3f46;
+    --text-primary: #ededed;
+    --text-secondary: #a1a1aa;
+    --text-muted: #71717a;
+    --accent: #a855f7;
+    --accent-hover: #9333ea;
+    --accent-active: #7e22ce;
+    --accent-subtle: rgba(168, 85, 247, 0.15);
+    --accent-border: rgba(168, 85, 247, 0.35);
+    --accent-text: #d8b4fe;
+    --btn-primary-bg: #a855f7;
+    --btn-primary-text: #ffffff;
+    --btn-primary-hover: #9333ea;
+    --badge-bg: rgba(168, 85, 247, 0.15);
+    --badge-border: rgba(168, 85, 247, 0.35);
+    --badge-text: #d8b4fe;
+    --scrollbar-track: #000000;
+    --scrollbar-thumb: #1f1f23;
+    --scrollbar-thumb-hover: #a855f7;
+
+    /* NexaVerse Brand Theme Variables */
+    --background: #000000;
+    --main-theme: #a855f7;
+    --theme-alt: #6b21a8;
+    --secondary: #0c0c0e;
+    --thirdy: #171717;
+    --border: #27272a;
+    --border-alpha: #3f3f46;
+    --text-color: #ededed;
+    --text-alt-color: #a1a1aa;
+    --s-main-theme: #c084fc;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+  }
+
+  /* Sleek scrollbars adhering to theme */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+  }
 }
 
 .font-mono-code {
-    font-family: var(--font-mono);
+  font-family: var(--font-mono);
 }
 
 /* Grid and Dots */
 .vercel-dots {
-    background-image: radial-gradient(
-        rgba(168, 85, 247, 0.12) 1px,
-        transparent 1px
-    );
-    background-size: 24px 24px;
+  background-image: radial-gradient(rgba(168, 85, 247, 0.12) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
-html[data-theme="light"] .vercel-dots {
-    background-image: radial-gradient(
-        rgba(124, 58, 237, 0.08) 1px,
-        transparent 1px
-    );
+html[data-theme='light'] .vercel-dots {
+  background-image: radial-gradient(rgba(124, 58, 237, 0.08) 1px, transparent 1px);
 }
 
 /* Theme Adaptive Card */
 .vercel-card {
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-card);
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-card);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .vercel-card:hover {
-    background-color: var(--bg-card-hover);
-    border-color: var(--border-hover);
+  background-color: var(--bg-card-hover);
+  border-color: var(--border-hover);
 }
 
 .vercel-card-active {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 1px var(--accent-border);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent-border);
 }
 
-/* Smooth enter animations */
+/* Smooth enter animations (pure opacity to preserve fixed overlay stacking context) */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(4px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .animate-fade-in {
-    animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.15s ease-out forwards;
+}
+
+/* Electron Window Drag Regions */
+.electron-drag-region {
+  -webkit-app-region: drag;
+}
+
+.electron-no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* =========================================================
+   NexaVerse Exact Auth Page Styles (User Specified)
+   ========================================================= */
+
+@font-face {
+  font-family: "Azonix";
+  src: url("https://fonts.cdnfonts.com/s/17396/Azonix.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* --- ANA KONTEYNER --- */
+.auth-page {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  font-family: "Poppins", sans-serif;
+  background-color: var(--background);
+  color: var(--text-color);
+}
+
+/* --- SOL PANEL (Marka - Masaüstü) --- */
+.brand-panel {
+  display: none;
+}
+
+/* --- SAĞ PANEL (Form) --- */
+.form-panel {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  position: relative;
+  /* Mobilde üstten gelen hafif bir tema rengi degrade */
+  background: radial-gradient(
+    circle at top,
+    var(--theme-alt) 0%,
+    var(--background) 70%
+  );
+  background-attachment: fixed;
+  animation: spotlight-sweep 8s ease-in-out infinite;
+}
+
+.form-wrapper {
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+}
+
+/* Mobil Logo */
+.mobile-logo-container {
+  margin-bottom: 30px;
+}
+
+.mobile-logo {
+  width: 160px;
+  height: 160px;
+  color: var(--main-theme);
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+/* Başlıklar */
+.auth-page h1 {
+  font-size: 30px;
+  font-weight: 800;
+  margin-bottom: 40px;
+  letter-spacing: -1px;
+  line-height: 1.2;
+  color: var(--text-color);
+}
+
+/* Buton Grupları */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Buton Temel Stili */
+.btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Ana Kayıt Butonu (Tema Rengi) */
+.btn-primary {
+  background-color: var(--main-theme);
+  color: var(--text-color);
+}
+
+.btn-primary:hover {
+  background-color: var(--theme-alt);
+  transform: scale(1.02);
+}
+
+/* Sosyal Butonlar */
+.btn-secondary {
+  background-color: var(--secondary);
+  color: var(--text-color);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  border-color: var(--border-alpha);
+  background-color: var(--thirdy);
+}
+
+.btn-secondary:focus {
+  border-color: var(--main-theme);
+  outline: none;
+}
+
+/* Ayırıcı (OR) */
+.divider {
+  display: flex;
+  align-items: center;
+  width: 50%;
+  /* Üst-alt 15px, sağ-sol otomatik */
+  margin: 15px auto;
+  color: var(--text-alt-color);
+  font-size: 12px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid var(--border);
+}
+
+.divider span {
+  padding: 0 10px;
+}
+
+/* Alt Metin */
+.footer-note {
+  margin-top: 50px;
+  font-size: 13px;
+  color: var(--text-alt-color);
+}
+
+.footer-note a,
+.footer-note button {
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: 600;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.footer-note a:hover,
+.footer-note button:hover {
+  color: var(--s-main-theme);
+  /* Hover olunca ikincil tema rengi */
+  text-decoration: underline;
+}
+
+@keyframes spotlight-sweep {
+  0% {
+    background-position: 0% 0%;
+    background-size: 100% 100%;
+  }
+
+  25% {
+    background-position: 0% 0%;
+    background-size: 100% 100%;
+    /* Işığın genişleyip daralması için */
+  }
+
+  50% {
+    background-position: 0% 0%;
+    background-size: 100% 100%;
+    /* Işığın genişleyip daralması için */
+  }
+
+  75% {
+    background-position: 0% 0%;
+    background-size: 100% 100%;
+    /* Işığın genişleyip daralması için */
+  }
+
+  100% {
+    background-position: 0% 0%;
+    background-size: 100% 100%;
+  }
+}
+
+.azonix {
+  font-family: "Azonix", sans-serif;
+  font-size: 1.2rem;
+  color: var(--text-color);
+}
+
+/* --- MASAÜSTÜ SÜRÜMÜ --- */
+@media (min-width: 1024px) {
+  .brand-panel {
+    display: flex;
+    /* Sol paneli aç */
+    flex: 1;
+    /* %50 yer kapla */
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    /* Çok daha yumuşak ve modern bir yeşil/mor geçişi */
+    background: radial-gradient(
+      circle at 20% 20%,
+      var(--theme-alt) 0%,
+      var(--background) 70%
+    );
+    background-size: 120% 120%;
+    animation: spotlight-sweep 12s ease-in-out infinite;
+    overflow: hidden;
+    background-size: cover;
+    width: auto;
+  }
+
+  .brand-content {
+    max-width: 100%;
+    text-align: left;
+  }
+
+  .brand-logo {
+    width: 240px;
+    height: 240px;
+    margin-bottom: 40px;
+    object-fit: contain;
+    /* Logoya hafif bir gölge ekleyerek öne çıkar */
+  }
+
+  .brand-title {
+    font-size: 56px;
+    font-weight: 800;
+    margin-bottom: 15px;
+    letter-spacing: -2px;
+    line-height: 1.1;
+    color: var(--text-color);
+  }
+
+  .brand-text {
+    font-size: 16px;
+    color: var(--text-alt-color);
+  }
+
+  .form-panel {
+    flex: 1;
+    background: var(--background);
+  }
+
+  .mobile-logo-container {
+    display: none;
+  }
+
+  .form-wrapper {
+    text-align: left;
+    max-width: 400px;
+    padding-left: 60px;
+  }
+
+  .auth-page h1 {
+    font-size: 48px;
+    margin-bottom: 60px;
+  }
 }
