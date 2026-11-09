@@ -25,6 +25,7 @@ import {
     Copy,
 } from "lucide-react";
 import { AppUser, Team, TeamInvitation } from "../types";
+import kirpiLogo from "../../assets/img/kirpi.png";
 import { firebaseService } from "../services/firebaseService";
 import { notificationService } from "../utils/notificationService";
 
@@ -220,10 +221,10 @@ export const Navbar: React.FC<NavbarProps> = ({
     };
 
     return (
-        <header className="sticky top-0 z-40 w-full border-b border-[var(--border-card)] bg-[var(--bg-island)] backdrop-blur-md font-sans transition-colors electron-drag-region select-none">
-            <div className="max-w-7xl mx-auto px-3 sm:px-6 h-14 flex items-center justify-between gap-3">
+        <header className="header-nav sticky z-40 backdrop-blur-md font-sans transition-colors electron-drag-region select-none">
+            <div className="mx-auto px-3 sm:px-6 h-14 gap-3 nav">
                 {/* Left: Brand + Navigation Tabs */}
-                <div className="flex items-center gap-4 sm:gap-7 min-w-0 electron-no-drag">
+                <div className="flex items-center gap-4 sm:gap-7 min-w-0 electron-no-drag logo-area">
                     {/* Logo */}
                     <div
                         className="flex items-center gap-2.5 cursor-pointer flex-shrink-0"
@@ -231,7 +232,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     >
                         <div className="w-7 h-7 flex items-center justify-center">
                             <img
-                                src="../../public/icon.png"
+                                src={kirpiLogo}
                                 alt="Icon"
                                 className="w-full h-full object-contain"
                             />
@@ -239,8 +240,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                         <span className="font-semibold text-sm tracking-tight text-[var(--text-primary)]">
                             Kirpi
                         </span>
-                    </div>
 
+                        <span className="beta-tag">GECE</span>
+                    </div>
+                </div>
+
+                <div className="flex justify-center nav-area">
                     {/* Navigation Tab Links */}
                     <nav className="hidden sm:flex items-center gap-1">
                         <button
@@ -298,16 +303,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </div>
 
                 {/* Right: Actions, Invites, Settings, Profile & Window Controls */}
-                <div className="flex items-center gap-2 flex-shrink-0 electron-no-drag">
-                    {/* Settings Button */}
-                    <button
-                        onClick={onOpenSettings}
-                        className="p-2 rounded-md border border-[var(--border-input)] bg-[var(--bg-input)] hover:bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
-                        title="Ayarlar & Güncelleme Kontrolü"
-                    >
-                        <Settings className="w-4 h-4" />
-                    </button>
-
+                <div className="flex items-center gap-2 flex-shrink-0 electron-no-drag control-area">
                     {/* Invitations Notification Bell */}
                     {currentUser && (
                         <div className="relative">
@@ -437,18 +433,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                                 </div>
                             )}
                         </div>
-                    )}
-
-                    {/* New Task Button (Only for Managers / Creators) */}
-                    {currentUser && isManagerInAnyTeam && (
-                        <button
-                            onClick={onOpenCreateTask}
-                            className="px-3 py-1.5 rounded-md bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold transition-all flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
-                        >
-                            <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-                            <span className="hidden sm:inline">Yeni Görev</span>
-                            <span className="sm:hidden">Ekle</span>
-                        </button>
                     )}
 
                     {/* User Account / Profile Menu */}
